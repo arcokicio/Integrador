@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 // Middleware
 app.use(bodyParser.json());
@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',           
-  password: 'password',   
+  password: 'admin',   
   database: 'frutaria',   
 });
 
