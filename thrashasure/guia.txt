@@ -1,0 +1,116 @@
+1. Instalar o Node.js
+
+Antes de mais nada, você precisa ter o Node.js instalado no seu computador. Caso não tenha, baixe e instale o Node.js em: https://nodejs.org/.
+2. Preparar o ambiente
+
+    Crie uma pasta para o seu projeto:
+        Abra o terminal ou prompt de comando e crie uma pasta para o seu projeto, por exemplo:
+
+    mkdir coleta-produtos
+    cd coleta-produtos
+
+Inicialize o projeto Node.js: No terminal, dentro da pasta do projeto, rode o comando abaixo para criar o package.json:
+
+npm init -y
+
+Instalar dependências: Agora, instale as dependências necessárias para rodar o código:
+
+    npm install express mysql2 body-parser
+
+3. Configurar o banco de dados MariaDB
+
+Certifique-se de ter o MariaDB ou MySQL instalado e configurado. Você pode fazer isso localmente ou usar uma instância na nuvem. O código conecta ao banco de dados usando:
+
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',           // Usuário do banco
+  password: 'admin',      // Senha do banco
+  database: '',           // Nome do banco de dados (deixe vazio por enquanto)
+});
+
+Criando o banco e as tabelas no MariaDB
+
+    Acesse o MariaDB no terminal:
+
+mysql -u root -p
+
+Crie o banco de dados e as tabelas necessárias:
+
+    CREATE DATABASE coleta_produtos;
+
+    USE coleta_produtos;
+
+    CREATE TABLE postoColeta (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nome VARCHAR(255),
+      endereco VARCHAR(255),
+      latitude DECIMAL(10, 6),
+      longitude DECIMAL(10, 6)
+    );
+
+    CREATE TABLE produtos (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nome VARCHAR(255),
+      precoPorKilo DECIMAL(10, 2),
+      postoColeta_id INT,
+      FOREIGN KEY (postoColeta_id) REFERENCES postoColeta(id)
+    );
+
+4. Configurar a conexão com o banco de dados
+
+No código fornecido, você está se conectando ao banco MariaDB com a seguinte configuração:
+
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',           // Altere conforme a configuração do seu banco
+  password: 'admin',      // Altere conforme a configuração do seu banco
+  database: 'coleta_produtos',  // Nome do banco criado
+});
+
+Verifique se o banco de dados coleta_produtos foi criado corretamente e se as tabelas estão prontas para uso.
+5. Rodar o servidor Express
+
+Agora, com o banco de dados configurado e as dependências instaladas, você pode rodar o servidor Express:
+
+    Crie um arquivo chamado app.js e cole o código fornecido nele.
+
+    No terminal, dentro da pasta do projeto, execute o seguinte comando para iniciar o servidor:
+
+node app.js
+
+Você verá a mensagem:
+
+    Servidor rodando na porta 8080
+
+6. Testar as rotas
+
+Agora você pode testar as rotas da sua API.
+
+    Cadastrar um posto de coleta:
+
+        Use um cliente HTTP como o Postman ou Insomnia para enviar um POST para http://localhost:8080/cadastraColeta com o corpo da requisição:
+
+    {
+      "nome": "Posto Central",
+      "endereco": "Rua X, 123",
+      "latitude": 12.345678,
+      "longitude": -98.765432
+    }
+
+Listar todos os postos de coleta:
+
+    Envie uma requisição GET para http://localhost:8080/listaColeta.
+
+Cadastrar um produto:
+
+    Envie um POST para http://localhost:8080/produtos com o corpo:
+
+    {
+      "nome": "Produto A",
+      "precoPorKilo": 10.50,
+      "postoColetaId": 1
+    }
+
+Listar todos os produtos:
+
+    Envie uma requisição GET para http://localhost:8080/produtos.

@@ -13,7 +13,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',           
   password: 'admin',   
-  database: 'frutaria',   
+  database: 'coleta_produtos',   
 });
 
 db.connect(err => {
@@ -26,15 +26,15 @@ db.connect(err => {
 
 // Rotas
 
-// Rota para cadastrar uma frutaria
-app.post('/frutarias', (req, res) => {
+// Rota para cadastrar um posto de coleta
+app.post('/cadastraColeta', (req, res) => {
   const { nome, endereco, latitude, longitude } = req.body;
 
-  const query = 'INSERT INTO frutarias (nome, endereco, latitude, longitude) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO postoColeta (nome, endereco, latitude, longitude) VALUES (?, ?, ?, ?)';
   db.query(query, [nome, endereco, latitude, longitude], (err, result) => {
     if (err) {
-      console.error('Erro ao cadastrar frutaria:', err);
-      return res.status(500).send('Erro ao cadastrar frutaria');
+      console.error('Erro ao cadastrar posto de coleta:', err);
+      return res.status(500).send('Erro ao cadastrar posto de coleta');
     }
 
     res.status(201).json({
@@ -47,13 +47,13 @@ app.post('/frutarias', (req, res) => {
   });
 });
 
-// Rota para listar todas as frutarias
-app.get('/frutarias', (req, res) => {
-  const query = 'SELECT * FROM frutarias';
+// Rota para listar todos postos de coleta
+app.get('/listaColeta', (req, res) => {
+  const query = 'SELECT * FROM postoColeta';
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao buscar frutarias:', err);
-      return res.status(500).send('Erro ao buscar frutarias');
+      console.error('Erro ao buscar posto de coleta:', err);
+      return res.status(500).send('Erro ao buscar posto de coleta');
     }
 
     res.json(results);
@@ -62,10 +62,10 @@ app.get('/frutarias', (req, res) => {
 
 // Rota para cadastrar um produto
 app.post('/produtos', (req, res) => {
-  const { nome, precoPorKilo, frutariaId } = req.body;
+  const { nome, precoPorKilo, postoColetaId } = req.body;
 
-  const query = 'INSERT INTO produtos (nome, precoPorKilo, frutaria_id) VALUES (?, ?, ?)';
-  db.query(query, [nome, precoPorKilo, frutariaId], (err, result) => {
+  const query = 'INSERT INTO produtos (nome, precoPorKilo, postoColeta_id) VALUES (?, ?, ?)';
+  db.query(query, [nome, precoPorKilo, postoColetaId], (err, result) => {
     if (err) {
       console.error('Erro ao cadastrar produto:', err);
       return res.status(500).send('Erro ao cadastrar produto');
@@ -75,7 +75,7 @@ app.post('/produtos', (req, res) => {
       id: result.insertId,
       nome,
       precoPorKilo,
-      frutariaId,
+      postoColetaId,
     });
   });
 });
